@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Player 2 (Vàng) - Vị Trí 2</title>
+    <style>
+      :root {
+        --bg-main: #0f172a;
+        --bg-card: #1e293b;
+        --blue: blue;
+        --aqua: aqua;
+        --yellow: yellow;
+        --green: green;
+        --red: red;
+        --pink: #ff00cc;
+        --purple: purple;
+        --lime: #39ff14;
+        --orange: orange;
+        --black: #000000;
+        --white: #ffffff;
+        --light-blue: aqua;
+        --dark-blue: blue;
+      }
+
+      * {
+        font-weight: bold !important;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--white);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 24px 16px;
+      }
+
+      button {
+        cursor: pointer;
+        border: 2px solid var(--white);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 16px;
+        transition: all 0.15s ease-in-out;
+        outline: none;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: var(--orange) !important;
+        color: var(--black) !important;
+        border-color: var(--orange) !important;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .app-header {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 3px solid var(--yellow);
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+      }
+
+      .header-title {
+        font-size: 24px;
+        color: var(--yellow);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .header-badge {
+        background-color: var(--purple);
+        color: var(--white);
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .player-container {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .card-container {
+        width: 100%;
+        max-width: 600px;
+        background-color: var(--bg-card);
+        border: 3px solid var(--yellow);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      }
+
+      .buzzer-btn {
+        width: 100%;
+        min-height: 260px;
+        font-size: 28px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.4;
+        transition: transform 0.1s ease-in-out;
+        border: 5px solid var(--white);
+        padding: 20px;
+      }
+
+      .buzzer-btn:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+
+      .buzzer-btn.btn-p2-ready {
+        background-color: var(--yellow) !important;
+        color: var(--black) !important;
+        border-color: var(--white) !important;
+      }
+
+      .buzzer-btn.btn-p2-ready:hover:not(:disabled) {
+        background-color: var(--orange) !important;
+        color: var(--black) !important;
+        border-color: var(--orange) !important;
+      }
+
+      .player-badge-p2 {
+        background-color: var(--yellow);
+        color: var(--black);
+        padding: 6px 14px;
+        border-radius: 6px;
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .toast-msg {
+        background-color: var(--bg-card);
+        color: var(--white);
+        border: 2px solid var(--aqua);
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 15px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+        animation: toastIn 0.25s ease-out;
+        pointer-events: auto;
+      }
+
+      .toast-msg.success {
+        border-color: var(--green);
+        color: var(--lime);
+      }
+
+      .toast-msg.error {
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      .toast-msg.info {
+        border-color: var(--aqua);
+        color: var(--aqua);
+      }
+
+      @keyframes toastIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* POPUP MODAL (Only for system / connection errors) */
+      #popup-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(15, 23, 42, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        padding: 16px;
+      }
+
+      .popup-card {
+        background-color: var(--bg-card);
+        border: 3px solid var(--yellow);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 480px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      }
+
+      .popup-title {
+        font-size: 22px;
+        color: var(--yellow);
+      }
+
+      .popup-body {
+        font-size: 16px;
+        color: var(--white);
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+
+      .popup-close-btn {
+        background-color: var(--yellow);
+        color: var(--black);
+        border-color: var(--yellow);
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="player-container">
+      <header class="app-header">
+        <h1 class="header-title">Vị trí 2 - Player 2</h1>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span class="player-badge-p2">VỊ TRÍ 2</span>
+          <span id="player-connection-badge" class="header-badge">Đang kết nối...</span>
+        </div>
+      </header>
+
+      <div class="card-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: var(--aqua); font-size: 16px;">PHÒNG THI ĐẤU:</span>
+          <span id="player-room-id" style="font-size: 26px; color: var(--yellow);">------</span>
+        </div>
+
+        <div id="player-status-banner" style="padding: 14px; border-radius: 8px; text-align: center; border: 2px solid var(--white); background-color: var(--bg-main); color: var(--white); font-size: 16px;">
+          Đang khởi tạo...
+        </div>
+
+        <button id="bell-button" class="buzzer-btn" disabled style="background-color: var(--bg-main); color: var(--white); border-color: var(--white);">
+          CHUÔNG ĐANG KHÓA
+        </button>
+
+        <p style="text-align: center; color: var(--aqua); font-size: 14px;">
+          Dùng chuột hoặc nhấn phím Enter trên bàn phím để bấm chuông.
+        </p>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast-container"></div>
+
+    <!-- POPUP MODAL -->
+    <div id="popup-modal">
+      <div class="popup-card">
+        <h3 id="popup-title" class="popup-title">THÔNG BÁO</h3>
+        <p id="popup-body" class="popup-body"></p>
+        <button id="popup-close-btn" class="popup-close-btn">Đóng</button>
+      </div>
+    </div>
+
+    <script>
+      // Disable DevTools Protection
+      function disableDevTools() {
+        document.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+          return false;
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'F12' || e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.shiftKey &&
+            ['I', 'i', 'J', 'j', 'C', 'c', 'K', 'k', 'M', 'm'].includes(e.key)
+          ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            ['u', 'U', 's', 'S', 'p', 'P'].includes(e.key)
+          ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        }, true);
+
+        try {
+          setInterval(function () {
+            console.clear();
+          }, 2000);
+        } catch (err) {}
+      }
+      disableDevTools();
+    </script>
+
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+      const PLAYER_NUMBER = 2;
+      const SUPABASE_URL = 'https://gyyjabuewruokczpqekz.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eWphYnVld3J1b2tjenBxZWt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQzOTk5NTksImV4cCI6MjA3OTk3NTk1OX0.bCsceRhW02FySQOdk61XnMLahTWtxCZIcpvvSIUNuIU';
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Toast & Popup strictly replacing alert, prompt, confirm
+      window.showToast = function(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast-msg ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      };
+
+      window.showPopup = function(title, message, type = 'info') {
+        const modal = document.getElementById('popup-modal');
+        const titleEl = document.getElementById('popup-title');
+        const bodyEl = document.getElementById('popup-body');
+        titleEl.textContent = title;
+        bodyEl.textContent = message;
+        modal.style.display = 'flex';
+      };
+
+      document.getElementById('popup-close-btn').addEventListener('click', () => {
+        document.getElementById('popup-modal').style.display = 'none';
+      });
+
+      function playBuzzerSound() {
+        try {
+          const audio = new Audio('buzzer.mp3');
+          audio.play().catch(() => {});
+        } catch (err) {}
+      }
+
+      let currentRoomId = null;
+      let currentRoomData = null;
+      let realtimeChannel = null;
+      let isSubmittingBuzz = false;
+
+      const connectionBadge = document.getElementById('player-connection-badge');
+      const roomIdLabel = document.getElementById('player-room-id');
+      const statusBanner = document.getElementById('player-status-banner');
+      const bellButton = document.getElementById('bell-button');
+
+      function updatePlayerUI() {
+        if (!currentRoomData) return;
+
+        const bellStatus = currentRoomData.bell_status || 'locked';
+        const buzzedPlayer = currentRoomData.buzzed_player;
+
+        if (buzzedPlayer) {
+          bellButton.disabled = true;
+          bellButton.className = 'buzzer-btn';
+          bellButton.style.backgroundColor = 'var(--bg-main)';
+          bellButton.style.color = 'var(--white)';
+          bellButton.style.borderColor = 'var(--white)';
+
+          if (buzzedPlayer === PLAYER_NUMBER || buzzedPlayer === String(PLAYER_NUMBER)) {
+            bellButton.textContent = 'BẠN ĐÃ GIÀNH QUYỀN TRẢ LỜI!';
+            statusBanner.textContent = 'Bạn đã giành quyền trả lời!';
+            statusBanner.style.backgroundColor = 'var(--green)';
+            statusBanner.style.color = 'var(--white)';
+          } else {
+            bellButton.textContent = `PLAYER ${buzzedPlayer} ĐÃ GIÀNH QUYỀN!`;
+            statusBanner.textContent = `Player ${buzzedPlayer} đã giành quyền trả lời!`;
+            statusBanner.style.backgroundColor = 'var(--red)';
+            statusBanner.style.color = 'var(--white)';
+          }
+          return;
+        }
+
+        if (bellStatus === 'open') {
+          bellButton.disabled = false;
+          bellButton.className = 'buzzer-btn btn-p2-ready';
+          bellButton.style.backgroundColor = 'var(--yellow)';
+          bellButton.style.color = 'var(--black)';
+          bellButton.style.borderColor = 'var(--white)';
+          bellButton.textContent = 'BẤM CHUÔNG NGAY!';
+
+          statusBanner.textContent = 'Chuông đang mở! Bạn có thể bấm chuông!';
+          statusBanner.style.backgroundColor = 'var(--green)';
+          statusBanner.style.color = 'var(--white)';
+        } else {
+          bellButton.disabled = true;
+          bellButton.className = 'buzzer-btn';
+          bellButton.style.backgroundColor = 'var(--bg-main)';
+          bellButton.style.color = 'var(--white)';
+          bellButton.style.borderColor = 'var(--white)';
+          bellButton.textContent = 'CHUÔNG ĐANG KHÓA';
+
+          statusBanner.textContent = 'Chuông đang khóa. Chờ tín hiệu từ Host / Controller...';
+          statusBanner.style.backgroundColor = 'var(--bg-main)';
+          statusBanner.style.color = 'var(--white)';
+        }
+      }
+
+      async function triggerBuzz() {
+        if (!currentRoomData) return;
+        if (currentRoomData.bell_status !== 'open') {
+          showToast('Chuông chưa được mở!', 'error');
+          return;
+        }
+        if (currentRoomData.buzzed_player) {
+          showToast('Đã có người giành quyền bấm trước!', 'error');
+          return;
+        }
+        if (isSubmittingBuzz) return;
+
+        isSubmittingBuzz = true;
+        bellButton.disabled = true;
+
+        try {
+          const { data: latestRoom, error: fetchErr } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('id', currentRoomId)
+            .single();
+
+          if (fetchErr) throw fetchErr;
+
+          const freshData = latestRoom.room_data || {};
+          if (freshData.bell_status !== 'open' || freshData.buzzed_player) {
+            currentRoomData = freshData;
+            updatePlayerUI();
+            if (freshData.buzzed_player) {
+              showToast(`Player ${freshData.buzzed_player} đã giành quyền trả lời!`, 'info');
+            }
+            return;
+          }
+
+          freshData.bell_status = 'locked';
+          freshData.buzzed_player = PLAYER_NUMBER;
+          freshData.buzzed_at = new Date().toISOString();
+
+          currentRoomData = freshData;
+          updatePlayerUI();
+          playBuzzerSound();
+          showToast('Bạn đã giành quyền trả lời!', 'success');
+
+          if (realtimeChannel) {
+            realtimeChannel.send({
+              type: 'broadcast',
+              event: 'state_change',
+              payload: { room_data: freshData },
+            });
+          }
+
+          await supabase
+            .from('rooms')
+            .update({ room_data: freshData })
+            .eq('id', currentRoomId);
+
+        } catch (err) {
+          console.error(err);
+          showToast('Lỗi bấm chuông: ' + err.message, 'error');
+        } finally {
+          isSubmittingBuzz = false;
+        }
+      }
+
+      bellButton.addEventListener('click', triggerBuzz);
+
+      // Support only Mouse Click and Enter key to press buzzer (Space is strictly disabled)
+      window.addEventListener(
+        'keydown',
+        (e) => {
+          if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+          if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
+            if (!bellButton.disabled) {
+              e.preventDefault();
+              triggerBuzz();
+            }
+          }
+        },
+        true
+      );
+
+      async function initPlayer() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomid');
+
+        if (!roomId || roomId.trim().length !== 6) {
+          showPopup('CHƯA CÓ MÃ PHÒNG', 'Không tìm thấy mã phòng trên URL. Vui lòng quay lại trang Đăng nhập để vào phòng.');
+          connectionBadge.textContent = 'Chưa vào phòng';
+          statusBanner.textContent = 'Vui lòng đăng nhập từ trang chủ index.html để vào phòng thi đấu!';
+          return;
+        }
+
+        currentRoomId = roomId.trim();
+        roomIdLabel.textContent = currentRoomId;
+        connectionBadge.textContent = 'Đang kết nối...';
+
+        try {
+          const { data, error } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('id', currentRoomId)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (!data) {
+            showToast(`Phòng ${currentRoomId} không tồn tại!`, 'error');
+            showPopup('LỖI KẾT NỐI', `Mã phòng ${currentRoomId} không tồn tại trong hệ thống.`);
+            connectionBadge.textContent = 'Lỗi kết nối';
+            return;
+          }
+
+          currentRoomData = data.room_data;
+          connectionBadge.textContent = 'Đã kết nối';
+          connectionBadge.style.backgroundColor = 'var(--green)';
+
+          updatePlayerUI();
+          showToast(`Đã kết nối phòng ${currentRoomId}!`, 'success');
+
+          realtimeChannel = supabase
+            .channel(`room_${currentRoomId}`)
+            .on('broadcast', { event: 'state_change' }, (payload) => {
+              if (payload.payload && payload.payload.room_data) {
+                const prevBuzzed = currentRoomData ? currentRoomData.buzzed_player : null;
+                const prevStatus = currentRoomData ? currentRoomData.bell_status : null;
+                currentRoomData = payload.payload.room_data;
+                updatePlayerUI();
+
+                if (currentRoomData.buzzed_player && currentRoomData.buzzed_player !== prevBuzzed) {
+                  playBuzzerSound();
+                  if (currentRoomData.buzzed_player === PLAYER_NUMBER || currentRoomData.buzzed_player === String(PLAYER_NUMBER)) {
+                    showToast('Bạn đã giành quyền trả lời!', 'success');
+                  } else {
+                    showToast(`Player ${currentRoomData.buzzed_player} đã giành quyền trả lời!`, 'info');
+                  }
+                } else if (currentRoomData.bell_status === 'open' && prevStatus !== 'open') {
+                  showToast('Chuông đã mở! Hãy nhanh tay bấm!', 'info');
+                } else if (currentRoomData.bell_status === 'locked' && prevStatus === 'open' && !currentRoomData.buzzed_player) {
+                  showToast('Chuông đã bị khóa.', 'info');
+                }
+              }
+            })
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'rooms', filter: `id=eq.${currentRoomId}` },
+              (payload) => {
+                if (payload.new && payload.new.room_data) {
+                  currentRoomData = payload.new.room_data;
+                  updatePlayerUI();
+                }
+              }
+            )
+            .subscribe();
+
+        } catch (err) {
+          console.error(err);
+          showToast('Lỗi khởi tạo: ' + err.message, 'error');
+          connectionBadge.textContent = 'Lỗi';
+        }
+      }
+
+      initPlayer();
+    </script>
+  </body>
+</html>

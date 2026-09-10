@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - Hệ Thống Chuông Bấm</title>
+    <style>
+      :root {
+        --bg-main: #0f172a;
+        --bg-card: #1e293b;
+        --blue: blue;
+        --aqua: aqua;
+        --yellow: yellow;
+        --green: green;
+        --red: red;
+        --pink: #ff00cc;
+        --purple: purple;
+        --lime: #39ff14;
+        --orange: orange;
+        --black: #000000;
+        --white: #ffffff;
+        --light-blue: aqua;
+        --dark-blue: blue;
+      }
+
+      * {
+        font-weight: bold !important;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--white);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+
+      button {
+        cursor: pointer;
+        border: 2px solid var(--white);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 16px;
+        transition: all 0.15s ease-in-out;
+        outline: none;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: var(--orange) !important;
+        color: var(--black) !important;
+        border-color: var(--orange) !important;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .app-header {
+        width: 100%;
+        max-width: 540px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 3px solid var(--aqua);
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+      }
+
+      .header-title {
+        font-size: 22px;
+        color: var(--aqua);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .header-badge {
+        background-color: var(--purple);
+        color: var(--white);
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .card-container {
+        width: 100%;
+        max-width: 540px;
+        background-color: var(--bg-card);
+        border: 3px solid var(--aqua);
+        border-radius: 12px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 4px;
+      }
+
+      .login-title {
+        font-size: 24px;
+        color: var(--yellow);
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-label {
+        font-size: 14px;
+        color: var(--aqua);
+        text-transform: uppercase;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 13px 16px;
+        font-size: 16px;
+        background-color: var(--bg-main);
+        color: var(--white);
+        border: 2px solid var(--aqua);
+        border-radius: 8px;
+        outline: none;
+      }
+
+      .form-input:focus {
+        border-color: var(--yellow);
+      }
+
+      select.form-input {
+        cursor: pointer;
+      }
+
+      .btn-submit {
+        background-color: var(--aqua);
+        color: var(--black);
+        font-size: 18px;
+        border-color: var(--aqua);
+        padding: 14px;
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .toast-msg {
+        background-color: var(--bg-card);
+        color: var(--white);
+        border: 2px solid var(--aqua);
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 15px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+        animation: toastIn 0.25s ease-out;
+        pointer-events: auto;
+      }
+
+      .toast-msg.success {
+        border-color: var(--green);
+        color: var(--lime);
+      }
+
+      .toast-msg.error {
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      .toast-msg.info {
+        border-color: var(--aqua);
+        color: var(--aqua);
+      }
+
+      @keyframes toastIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* POPUP MODAL */
+      #popup-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(15, 23, 42, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        padding: 16px;
+      }
+
+      .popup-card {
+        background-color: var(--bg-card);
+        border: 3px solid var(--aqua);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 480px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      }
+
+      .popup-title {
+        font-size: 22px;
+        color: var(--yellow);
+      }
+
+      .popup-body {
+        font-size: 16px;
+        color: var(--white);
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+
+      .popup-close-btn {
+        background-color: var(--aqua);
+        color: var(--black);
+        border-color: var(--aqua);
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-header">
+      <h1 class="header-title">HỆ THỐNG CHUÔNG BẤM</h1>
+      <span class="header-badge">Đăng Nhập</span>
+    </header>
+
+    <main class="card-container">
+      <div class="login-header">
+        <h2 class="login-title">ĐĂNG NHẬP THI ĐẤU</h2>
+        <p style="color: var(--aqua); font-size: 14px;">
+          Chọn vị trí người chơi, nhập mã phòng và mật khẩu được cấp
+        </p>
+      </div>
+
+      <form id="login-form" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- 1. Position selection (1 - 3) -->
+        <div class="form-group">
+          <label class="form-label" for="select-position">1. CHỌN VỊ TRÍ NGƯỜI CHƠI (1 - 3):</label>
+          <select id="select-position" class="form-input" required>
+            <option value="" disabled selected>-- Chọn vị trí người chơi --</option>
+            <option value="1">Vị trí 1 (Player 1 - Đỏ)</option>
+            <option value="2">Vị trí 2 (Player 2 - Vàng)</option>
+            <option value="3">Vị trí 3 (Player 3 - Xanh dương)</option>
+          </select>
+        </div>
+
+        <!-- 2. Room ID (6 digits) -->
+        <div class="form-group">
+          <label class="form-label" for="input-room-id">2. NHẬP MÃ PHÒNG (6 CHỮ SỐ):</label>
+          <input
+            type="text"
+            id="input-room-id"
+            class="form-input"
+            placeholder="Ví dụ: 123456"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            required
+            style="letter-spacing: 2px;"
+          />
+        </div>
+
+        <!-- 3. Password (4 digits) -->
+        <div class="form-group">
+          <label class="form-label" for="input-password">3. NHẬP MẬT KHẨU (4 CHỮ SỐ):</label>
+          <input
+            type="password"
+            id="input-password"
+            class="form-input"
+            placeholder="Ví dụ: 8888"
+            maxlength="4"
+            pattern="[0-9]{4}"
+            required
+            style="letter-spacing: 2px;"
+          />
+        </div>
+
+        <button type="submit" id="btn-login" class="btn-submit">
+          Vào phòng thi đấu
+        </button>
+      </form>
+    </main>
+
+    <!-- TOAST -->
+    <div id="toast-container"></div>
+
+    <!-- POPUP MODAL -->
+    <div id="popup-modal">
+      <div class="popup-card">
+        <h3 id="popup-title" class="popup-title">THÔNG BÁO</h3>
+        <p id="popup-body" class="popup-body"></p>
+        <button id="popup-close-btn" class="popup-close-btn">Đóng</button>
+      </div>
+    </div>
+
+    <script>
+      // Disable DevTools Protection
+      function disableDevTools() {
+        document.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+          return false;
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'F12' || e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.shiftKey &&
+            ['I', 'i', 'J', 'j', 'C', 'c', 'K', 'k', 'M', 'm'].includes(e.key)
+          ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            ['u', 'U', 's', 'S', 'p', 'P'].includes(e.key)
+          ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        }, true);
+
+        try {
+          setInterval(function () {
+            console.clear();
+          }, 2000);
+        } catch (err) {}
+      }
+      disableDevTools();
+    </script>
+
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+      const SUPABASE_URL = 'https://gyyjabuewruokczpqekz.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eWphYnVld3J1b2tjenBxZWt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQzOTk5NTksImV4cCI6MjA3OTk3NTk1OX0.bCsceRhW02FySQOdk61XnMLahTWtxCZIcpvvSIUNuIU';
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Toast & Popup strictly replacing alert, prompt, confirm
+      window.showToast = function(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast-msg ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      };
+
+      window.showPopup = function(title, message, type = 'info') {
+        const modal = document.getElementById('popup-modal');
+        const titleEl = document.getElementById('popup-title');
+        const bodyEl = document.getElementById('popup-body');
+        titleEl.textContent = title;
+        bodyEl.textContent = message;
+        modal.style.display = 'flex';
+      };
+
+      document.getElementById('popup-close-btn').addEventListener('click', () => {
+        document.getElementById('popup-modal').style.display = 'none';
+      });
+
+      const form = document.getElementById('login-form');
+      const selectPos = document.getElementById('select-position');
+      const inputRoom = document.getElementById('input-room-id');
+      const inputPass = document.getElementById('input-password');
+      const btnLogin = document.getElementById('btn-login');
+
+      // Auto-populate room from url if present
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('roomid');
+      if (roomParam && roomParam.trim().length === 6) {
+        inputRoom.value = roomParam.trim();
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const position = selectPos.value;
+        const roomId = inputRoom.value.trim();
+        const password = inputPass.value.trim();
+
+        if (!position) {
+          showToast('Vui lòng chọn vị trí người chơi (1 - 3)!', 'error');
+          return;
+        }
+
+        if (roomId.length !== 6 || !/^\d{6}$/.test(roomId)) {
+          showToast('Mã phòng phải gồm 6 chữ số!', 'error');
+          return;
+        }
+
+        if (password.length !== 4 || !/^\d{4}$/.test(password)) {
+          showToast('Mật khẩu phải gồm 4 chữ số!', 'error');
+          return;
+        }
+
+        try {
+          btnLogin.disabled = true;
+          btnLogin.textContent = 'Đang kiểm tra...';
+
+          const { data, error } = await supabase
+            .from('rooms')
+            .select('*')
+            .eq('id', roomId)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (!data) {
+            showToast(`Mã phòng ${roomId} không tồn tại!`, 'error');
+            showPopup('LỖI ĐĂNG NHẬP', `Mã phòng ${roomId} không tồn tại trong hệ thống. Vui lòng kiểm tra lại.`);
+            return;
+          }
+
+          const roomData = data.room_data;
+          if (!roomData) {
+            showToast('Dữ liệu phòng không hợp lệ!', 'error');
+            return;
+          }
+
+          const passwords = roomData.passwords || {};
+          const targetPass = passwords[position] || roomData[`p${position}_passcode`];
+
+          if (String(targetPass).trim() !== password) {
+            showToast(`Sai mật khẩu cho Player ${position}!`, 'error');
+            showPopup('SAI MẬT KHẨU', `Mật khẩu không chính xác cho vị trí Player ${position}. Vui lòng nhập lại mật khẩu được cấp từ Controller.`);
+            return;
+          }
+
+          showToast(`Đăng nhập thành công Player ${position}! Đang chuyển hướng...`, 'success');
+
+          setTimeout(() => {
+            window.location.href = `/Player${position}.html?roomid=${roomId}`;
+          }, 500);
+
+        } catch (err) {
+          console.error(err);
+          showToast('Lỗi hệ thống: ' + err.message, 'error');
+        } finally {
+          btnLogin.disabled = false;
+          btnLogin.textContent = 'Vào phòng thi đấu';
+        }
+      });
+    </script>
+  </body>
+</html>
