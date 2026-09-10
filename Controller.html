@@ -31,26 +31,30 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       }
 
+      html, body {
+        height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+
       body {
         background-color: var(--bg-main);
         color: var(--white);
-        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 24px 16px;
-        scale: 0.75;
+        padding: 10px 14px;
+        box-sizing: border-box;
       }
 
       button {
         cursor: pointer;
         border: 2px solid var(--white);
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-size: 16px;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 14px;
         transition: all 0.15s ease-in-out;
         outline: none;
+        white-space: nowrap;
       }
 
       button:hover:not(:disabled) {
@@ -66,17 +70,18 @@
 
       .app-header {
         width: 100%;
-        max-width: 750px;
+        max-width: 1360px;
+        margin: 0 auto 8px auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 3px solid var(--aqua);
-        padding-bottom: 12px;
-        margin-bottom: 20px;
+        border-bottom: 2px solid var(--aqua);
+        padding-bottom: 6px;
+        flex-shrink: 0;
       }
 
       .header-title {
-        font-size: 24px;
+        font-size: 18px;
         color: var(--yellow);
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -85,32 +90,55 @@
       .header-badge {
         background-color: var(--purple);
         color: var(--white);
-        padding: 6px 14px;
+        padding: 4px 10px;
         border-radius: 6px;
-        font-size: 14px;
+        font-size: 13px;
       }
 
-      .card-container {
+      .dashboard-container {
         width: 100%;
-        max-width: 750px;
-        background-color: var(--bg-card);
-        border: 3px solid var(--aqua);
-        border-radius: 12px;
-        padding: 24px;
+        max-width: 1360px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .col-section {
         display: flex;
         flex-direction: column;
-        gap: 18px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+        gap: 10px;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .card-box {
+        background-color: var(--bg-card);
+        border: 2px solid var(--aqua);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      }
+
+      .card-box.compact {
+        padding: 10px;
+        gap: 6px;
       }
 
       .form-input {
         width: 100%;
-        padding: 12px 16px;
-        font-size: 18px;
+        padding: 8px 12px;
+        font-size: 14px;
         background-color: var(--bg-main);
         color: var(--white);
         border: 2px solid var(--aqua);
-        border-radius: 8px;
+        border-radius: 6px;
         outline: none;
       }
 
@@ -122,32 +150,32 @@
         background-color: var(--yellow);
         color: var(--black);
         border-color: var(--yellow);
-        font-size: 18px;
-        padding: 14px 20px;
+        font-size: 15px;
+        padding: 10px 16px;
         width: 100%;
       }
 
-      .room-info-box {
+      .room-info-bar {
         background-color: var(--bg-main);
         border: 2px solid var(--yellow);
-        border-radius: 8px;
-        padding: 18px;
-        margin-top: 12px;
+        border-radius: 6px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .passwords-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-top: 14px;
+        gap: 8px;
       }
 
       .player-auth-card {
-        background-color: var(--bg-card);
-        border: 2px solid var(--aqua);
-        border-radius: 8px;
-        padding: 12px;
+        border-radius: 6px;
+        padding: 8px 6px;
         text-align: center;
+        border: 2px solid;
       }
 
       .player-auth-card.p1 {
@@ -168,11 +196,49 @@
         color: #000000;
       }
 
+      .name-setting-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .name-label-badge {
+        font-size: 12px;
+        text-align: center;
+        padding: 5px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+
+      .name-label-badge.white-box-p1 {
+        background-color: #ffffff;
+        color: var(--red);
+        border: 1px solid var(--red);
+      }
+
+      .name-label-badge.white-box-p3 {
+        background-color: #ffffff;
+        color: #0000ff;
+        border: 1px solid #0000ff;
+      }
+
+      .name-label-badge.black-box-p2 {
+        background-color: #000000;
+        color: #ffff00;
+        border: 1px solid #ffff00;
+      }
+
       .controls-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-top: 16px;
+        gap: 10px;
+      }
+
+      .btn-control {
+        font-size: 16px;
+        padding: 14px 10px;
+        border-radius: 8px;
       }
 
       .btn-open {
@@ -200,12 +266,12 @@
       }
 
       .status-indicator {
-        font-size: 20px;
+        font-size: 17px;
         text-align: center;
-        padding: 14px;
+        padding: 12px 10px;
         border-radius: 8px;
-        margin-top: 16px;
         border: 2px solid var(--white);
+        line-height: 1.3;
       }
 
       .status-locked {
@@ -226,39 +292,72 @@
         border-color: #00ffff !important;
       }
 
-      .direct-links {
-        display: flex;
-        flex-wrap: wrap;
+      .links-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-        margin-top: 12px;
-        justify-content: center;
       }
 
-      .nav-link {
+      .link-item {
+        background-color: var(--bg-main);
+        border: 1px solid var(--aqua);
+        border-radius: 6px;
+        padding: 6px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .link-item.link-box-p1 {
+        background-color: #ffffff !important;
+        border-color: var(--red) !important;
+      }
+
+      .link-item.link-box-p2 {
+        border-color: #ffff00 !important;
+      }
+
+      .link-item.link-box-p3 {
+        background-color: #ffffff !important;
+        border-color: #0000ff !important;
+      }
+
+      .nav-link-btn {
         color: var(--aqua);
         text-decoration: none;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background-color: var(--bg-card);
         border: 1px solid var(--aqua);
-        padding: 8px 14px;
-        border-radius: 6px;
-        font-size: 14px;
-        background-color: var(--bg-main);
+        white-space: nowrap;
       }
 
-      .nav-link:hover {
+      .nav-link-btn:hover {
         background-color: var(--orange) !important;
         color: var(--black) !important;
         border-color: var(--orange) !important;
       }
 
+      .copy-btn-mini {
+        background-color: var(--purple);
+        color: var(--white);
+        border: 1px solid var(--purple);
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+
       /* TOAST NOTIFICATION */
       #toast-container {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
+        bottom: 16px;
+        right: 16px;
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
         pointer-events: none;
       }
 
@@ -266,11 +365,11 @@
         background-color: var(--bg-card);
         color: var(--white);
         border: 2px solid var(--aqua);
-        border-radius: 8px;
-        padding: 12px 20px;
-        font-size: 15px;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 13px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
-        animation: toastIn 0.25s ease-out;
+        animation: toastIn 0.2s ease-out;
         pointer-events: auto;
       }
 
@@ -291,7 +390,7 @@
 
       @keyframes toastIn {
         from {
-          transform: translateY(20px);
+          transform: translateY(14px);
           opacity: 0;
         }
         to {
@@ -318,26 +417,26 @@
       .popup-card {
         background-color: var(--bg-card);
         border: 3px solid var(--yellow);
-        border-radius: 12px;
-        padding: 24px;
-        max-width: 480px;
+        border-radius: 10px;
+        padding: 18px;
+        max-width: 440px;
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         text-align: center;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
       }
 
       .popup-title {
-        font-size: 22px;
+        font-size: 18px;
         color: var(--yellow);
       }
 
       .popup-body {
-        font-size: 16px;
+        font-size: 14px;
         color: var(--white);
-        line-height: 1.5;
+        line-height: 1.4;
         white-space: pre-line;
       }
 
@@ -345,98 +444,169 @@
         background-color: var(--yellow);
         color: var(--black);
         border-color: var(--yellow);
-        font-size: 16px;
+        font-size: 14px;
       }
     </style>
   </head>
   <body>
     <header class="app-header">
-      <h1 class="header-title">BẢNG ĐIỀU KHIỂN - CONTROLLER</h1>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <h1 class="header-title">BẢNG ĐIỀU KHIỂN - CONTROLLER</h1>
+        <span style="font-size: 12px; color: var(--aqua); background: rgba(0,255,255,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--aqua);">Project: CNKDBuzz</span>
+      </div>
       <span class="header-badge" id="connection-status">Chưa vào phòng</span>
     </header>
 
-    <main class="card-container">
-      <button id="btn-create-room" class="btn-primary">
-        Tạo mã phòng và mật khẩu
-      </button>
+    <main class="dashboard-container">
+      <!-- CỘT TRÁI: Quản lý phòng & Cài đặt Người chơi -->
+      <section class="col-section">
+        <!-- Box 1: Tạo / Tải phòng -->
+        <div class="card-box compact">
+          <button id="btn-create-room" class="btn-primary">
+            + Tạo mã phòng và mật khẩu mới
+          </button>
+          <div style="display: flex; gap: 6px;">
+            <input
+              type="text"
+              id="input-existing-room"
+              class="form-input"
+              placeholder="Nhập mã phòng 6 số..."
+              maxlength="6"
+            />
+            <button id="btn-load-room" style="background-color: var(--aqua); color: var(--black); border-color: var(--aqua); padding: 8px 12px;">
+              Tải phòng
+            </button>
+          </div>
+        </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 4px;">
-        <input
-          type="text"
-          id="input-existing-room"
-          class="form-input"
-          placeholder="Hoặc nhập mã phòng 6 số đã có..."
-          maxlength="6"
-        />
-        <button id="btn-load-room" style="background-color: var(--aqua); color: var(--black); white-space: nowrap; border-color: var(--aqua);">
-          Tải phòng
-        </button>
-      </div>
-
-      <div id="room-details-section" style="display: none;">
-        <div class="room-info-box">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Box 2: Thông tin phòng & Mật khẩu -->
+        <div id="room-details-box" class="card-box compact" style="display: none;">
+          <div class="room-info-bar">
             <div>
-              <span style="color: var(--aqua); font-size: 14px;">MÃ PHÒNG:</span>
-              <h2 id="display-room-id" style="font-size: 32px; color: var(--yellow); letter-spacing: 2px;">
+              <span style="color: var(--aqua); font-size: 11px;">MÃ PHÒNG:</span>
+              <div id="display-room-id" style="font-size: 24px; color: var(--yellow); letter-spacing: 2px;">
                 ------
-              </h2>
+              </div>
             </div>
-            <button id="btn-copy-room" style="background-color: var(--bg-card); color: var(--aqua); border-color: var(--aqua); font-size: 13px; padding: 8px 14px;">
+            <button id="btn-copy-room" style="background-color: var(--bg-card); color: var(--aqua); border-color: var(--aqua); font-size: 12px; padding: 6px 10px;">
               Sao chép mã
             </button>
           </div>
 
           <div class="passwords-grid">
             <div class="player-auth-card p1">
-              <div style="color: #dc2626; font-size: 13px;">PLAYER 1</div>
-              <div id="display-p1-pass" style="font-size: 20px; color: #000000; margin: 4px 0;">----</div>
-              <div style="font-size: 11px; color: #475569;">Mật khẩu P1</div>
+              <div id="badge-p1-name" style="color: #dc2626; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Player 1 (Đỏ)</div>
+              <div id="display-p1-pass" style="font-size: 18px; color: #000000; margin: 2px 0;">----</div>
+              <div style="font-size: 10px; color: #475569;">Mật khẩu P1</div>
             </div>
             <div class="player-auth-card p2">
-              <div style="color: var(--yellow); font-size: 13px;">PLAYER 2</div>
-              <div id="display-p2-pass" style="font-size: 20px; color: var(--white); margin: 4px 0;">----</div>
-              <div style="font-size: 11px; color: var(--aqua);">Mật khẩu P2</div>
+              <div id="badge-p2-name" style="color: var(--yellow); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Player 2 (Vàng)</div>
+              <div id="display-p2-pass" style="font-size: 18px; color: var(--white); margin: 2px 0;">----</div>
+              <div style="font-size: 10px; color: var(--aqua);">Mật khẩu P2</div>
             </div>
             <div class="player-auth-card p3">
-              <div style="color: #2563eb; font-size: 13px;">PLAYER 3</div>
-              <div id="display-p3-pass" style="font-size: 20px; color: #000000; margin: 4px 0;">----</div>
-              <div style="font-size: 11px; color: #475569;">Mật khẩu P3</div>
+              <div id="badge-p3-name" style="color: #2563eb; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Player 3 (Xanh)</div>
+              <div id="display-p3-pass" style="font-size: 18px; color: #000000; margin: 2px 0;">----</div>
+              <div style="font-size: 10px; color: #475569;">Mật khẩu P3</div>
             </div>
           </div>
         </div>
 
+        <!-- Box 3: Đặt tên 3 người chơi -->
+        <div id="player-names-box" class="card-box compact" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--yellow); font-size: 13px;">CÀI ĐẶT TÊN 3 NGƯỜI CHƠI:</span>
+            <button id="btn-save-names" style="background-color: var(--green); color: var(--white); border-color: var(--green); font-size: 11px; padding: 4px 10px;">
+              💾 Lưu tên
+            </button>
+          </div>
+          
+          <div class="name-setting-row">
+            <span class="name-label-badge white-box-p1">P1 (Đỏ):</span>
+            <input type="text" id="input-p1-name" class="form-input" placeholder="Tên Player 1" maxlength="25" />
+          </div>
+          <div class="name-setting-row">
+            <span class="name-label-badge black-box-p2">P2 (Vàng):</span>
+            <input type="text" id="input-p2-name" class="form-input" placeholder="Tên Player 2" maxlength="25" />
+          </div>
+          <div class="name-setting-row">
+            <span class="name-label-badge white-box-p3">P3 (Xanh):</span>
+            <input type="text" id="input-p3-name" class="form-input" placeholder="Tên Player 3" maxlength="25" />
+          </div>
+        </div>
+      </section>
+
+      <!-- CỘT PHẢI: Điều khiển chuông & Mở nhanh màn hình -->
+      <section class="col-section">
+        <!-- Box 4: Trạng thái chuông -->
         <div id="bell-status-banner" class="status-indicator status-locked">
-          Trạng thái chuông: KHÓA
+          TRẠNG THÁI CHUÔNG: ĐANG KHÓA
         </div>
 
-        <div class="controls-grid">
-          <button id="btn-open-bell" class="btn-open">
-            Mở chuông
-          </button>
-          <button id="btn-lock-bell" class="btn-lock">
-            Khóa chuông
-          </button>
-          <button id="btn-reset-open" class="btn-reset-open">
-            Reset và Mở
-          </button>
-          <button id="btn-reset-lock" class="btn-reset-lock">
-            Reset và Khóa
-          </button>
+        <!-- Box 5: 4 Nút điều khiển -->
+        <div class="card-box">
+          <div style="color: var(--aqua); font-size: 13px; margin-bottom: 2px;">ĐIỀU KHIỂN CHUÔNG:</div>
+          <div class="controls-grid">
+            <button id="btn-open-bell" class="btn-control btn-open">
+              🔔 Mở chuông
+            </button>
+            <button id="btn-lock-bell" class="btn-control btn-lock">
+              🔒 Khóa chuông
+            </button>
+            <button id="btn-reset-open" class="btn-control btn-reset-open">
+              ⚡ Reset & Mở
+            </button>
+            <button id="btn-reset-lock" class="btn-control btn-reset-lock">
+              🔄 Reset & Khóa
+            </button>
+          </div>
         </div>
 
-        <div style="margin-top: 16px; border-top: 1px solid var(--purple); padding-top: 12px;">
-          <div style="color: var(--aqua); font-size: 14px; margin-bottom: 8px; text-align: center;">
-            Mở nhanh các màn hình theo mã phòng:
+        <!-- Box 6: Mở nhanh màn hình (Tự động thêm /CNKDBuzz nếu trên GitHub Pages) -->
+        <div id="quick-links-box" class="card-box compact" style="display: none;">
+          <div style="color: var(--aqua); font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span>MỞ NHANH & SAO CHÉP LIÊN KẾT THEO PHÒNG:</span>
           </div>
-          <div class="direct-links">
-            <a id="link-open-host" class="nav-link" href="#" target="_blank">Màn hình Host</a>
-            <a id="link-open-p1" class="nav-link" href="#" target="_blank">Player 1</a>
-            <a id="link-open-p2" class="nav-link" href="#" target="_blank">Player 2</a>
-            <a id="link-open-p3" class="nav-link" href="#" target="_blank">Player 3</a>
+
+          <div class="links-grid">
+            <!-- Host Link -->
+            <div class="link-item">
+              <span style="font-size: 12px; color: var(--white);">Màn Host</span>
+              <div style="display: flex; gap: 4px;">
+                <a id="link-open-host" class="nav-link-btn" href="#" target="_blank">Mở</a>
+                <button id="btn-copy-host-link" class="copy-btn-mini">Chép</button>
+              </div>
+            </div>
+
+            <!-- Player 1 Link (Nền trắng, chữ Đỏ) -->
+            <div class="link-item link-box-p1">
+              <span id="link-label-p1" style="font-size: 12px; color: var(--red); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px;">Player 1</span>
+              <div style="display: flex; gap: 4px;">
+                <a id="link-open-p1" class="nav-link-btn" href="#" target="_blank">Mở</a>
+                <button id="btn-copy-p1-link" class="copy-btn-mini">Chép</button>
+              </div>
+            </div>
+
+            <!-- Player 2 Link (Viền màu ffff00) -->
+            <div class="link-item link-box-p2">
+              <span id="link-label-p2" style="font-size: 12px; color: var(--yellow); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px;">Player 2</span>
+              <div style="display: flex; gap: 4px;">
+                <a id="link-open-p2" class="nav-link-btn" href="#" target="_blank">Mở</a>
+                <button id="btn-copy-p2-link" class="copy-btn-mini">Chép</button>
+              </div>
+            </div>
+
+            <!-- Player 3 Link (Nền trắng, chữ màu 0000ff) -->
+            <div class="link-item link-box-p3">
+              <span id="link-label-p3" style="font-size: 12px; color: #0000ff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px;">Player 3</span>
+              <div style="display: flex; gap: 4px;">
+                <a id="link-open-p3" class="nav-link-btn" href="#" target="_blank">Mở</a>
+                <button id="btn-copy-p3-link" class="copy-btn-mini">Chép</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <!-- TOAST CONTAINER -->
@@ -496,6 +666,7 @@
     <script type="module">
       import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+      const PROJECT_NAME = 'CNKDBuzz';
       const SUPABASE_URL = 'https://gyyjabuewruokczpqekz.supabase.co';
       const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eWphYnVld3J1b2tjenBxZWt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQzOTk5NTksImV4cCI6MjA3OTk3NTk1OX0.bCsceRhW02FySQOdk61XnMLahTWtxCZIcpvvSIUNuIU';
 
@@ -542,11 +713,23 @@
       const btnCreateRoom = document.getElementById('btn-create-room');
       const inputExistingRoom = document.getElementById('input-existing-room');
       const btnLoadRoom = document.getElementById('btn-load-room');
-      const roomDetailsSection = document.getElementById('room-details-section');
+      const roomDetailsBox = document.getElementById('room-details-box');
+      const playerNamesBox = document.getElementById('player-names-box');
+      const quickLinksBox = document.getElementById('quick-links-box');
+      
       const displayRoomId = document.getElementById('display-room-id');
       const displayP1Pass = document.getElementById('display-p1-pass');
       const displayP2Pass = document.getElementById('display-p2-pass');
       const displayP3Pass = document.getElementById('display-p3-pass');
+      const badgeP1Name = document.getElementById('badge-p1-name');
+      const badgeP2Name = document.getElementById('badge-p2-name');
+      const badgeP3Name = document.getElementById('badge-p3-name');
+      
+      const inputP1Name = document.getElementById('input-p1-name');
+      const inputP2Name = document.getElementById('input-p2-name');
+      const inputP3Name = document.getElementById('input-p3-name');
+      const btnSaveNames = document.getElementById('btn-save-names');
+
       const btnCopyRoom = document.getElementById('btn-copy-room');
       const bellStatusBanner = document.getElementById('bell-status-banner');
       const connectionStatus = document.getElementById('connection-status');
@@ -560,6 +743,14 @@
       const linkOpenP1 = document.getElementById('link-open-p1');
       const linkOpenP2 = document.getElementById('link-open-p2');
       const linkOpenP3 = document.getElementById('link-open-p3');
+      
+      const btnCopyHostLink = document.getElementById('btn-copy-host-link');
+      const btnCopyP1Link = document.getElementById('btn-copy-p1-link');
+      const btnCopyP2Link = document.getElementById('btn-copy-p2-link');
+      const btnCopyP3Link = document.getElementById('btn-copy-p3-link');
+      const linkLabelP1 = document.getElementById('link-label-p1');
+      const linkLabelP2 = document.getElementById('link-label-p2');
+      const linkLabelP3 = document.getElementById('link-label-p3');
 
       function generate6DigitCode() {
         return Math.floor(100000 + Math.random() * 900000).toString();
@@ -567,6 +758,34 @@
 
       function generate4DigitPass() {
         return Math.floor(1000 + Math.random() * 9000).toString();
+      }
+
+      // Calculate base URL, adding project name /CNKDBuzz if on GitHub Pages
+      function getAppBaseUrl() {
+        const origin = window.location.origin;
+        const path = window.location.pathname;
+        
+        let dir = path.substring(0, path.lastIndexOf('/'));
+        
+        // If hosted on GitHub Pages (*.github.io) or URL contains CNKDBuzz, ensure project prefix exists
+        if (window.location.hostname.includes('github.io')) {
+          if (!dir.toLowerCase().includes(PROJECT_NAME.toLowerCase())) {
+            dir = '/' + PROJECT_NAME + dir;
+          }
+        } else if (path.toLowerCase().includes(PROJECT_NAME.toLowerCase())) {
+          if (!dir.toLowerCase().includes(PROJECT_NAME.toLowerCase())) {
+            dir = '/' + PROJECT_NAME;
+          }
+        }
+        
+        return `${origin}${dir}`;
+      }
+
+      function getPlayerName(pNum) {
+        if (!currentRoomData || !currentRoomData.player_names) {
+          return pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3';
+        }
+        return currentRoomData.player_names[String(pNum)] || (pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3');
       }
 
       function updateUI() {
@@ -578,13 +797,30 @@
         displayP2Pass.textContent = passwords['2'] || '----';
         displayP3Pass.textContent = passwords['3'] || '----';
 
+        const p1Name = getPlayerName(1);
+        const p2Name = getPlayerName(2);
+        const p3Name = getPlayerName(3);
+
+        badgeP1Name.textContent = p1Name;
+        badgeP2Name.textContent = p2Name;
+        badgeP3Name.textContent = p3Name;
+
+        linkLabelP1.textContent = p1Name;
+        linkLabelP2.textContent = p2Name;
+        linkLabelP3.textContent = p3Name;
+
+        // Populate name inputs if not currently focused by user
+        if (document.activeElement !== inputP1Name) inputP1Name.value = p1Name;
+        if (document.activeElement !== inputP2Name) inputP2Name.value = p2Name;
+        if (document.activeElement !== inputP3Name) inputP3Name.value = p3Name;
+
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
 
         if (buzzedPlayer) {
           bellStatusBanner.className = 'status-indicator status-buzzed';
-          const pNames = { 1: 'PLAYER 1 (ĐỎ)', 2: 'PLAYER 2 (VÀNG)', 3: 'PLAYER 3 (XANH DƯƠNG)' };
-          bellStatusBanner.textContent = `${pNames[buzzedPlayer] || 'PLAYER ' + buzzedPlayer} ĐÃ NHẤN CHUÔNG THÀNH CÔNG!`;
+          const buzzedName = getPlayerName(Number(buzzedPlayer));
+          bellStatusBanner.textContent = `🔔 ${buzzedName.toUpperCase()} ĐÃ NHẤN CHUÔNG THÀNH CÔNG!`;
         } else if (bellStatus === 'open') {
           bellStatusBanner.className = 'status-indicator status-open';
           bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG MỞ (SẴN SÀNG BẤM)';
@@ -593,18 +829,40 @@
           bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG KHÓA';
         }
 
-        linkOpenHost.href = `/Host.html?roomid=${currentRoomId}`;
-        linkOpenP1.href = `/Player1.html?roomid=${currentRoomId}&auth=${passwords['1'] || ''}`;
-        linkOpenP2.href = `/Player2.html?roomid=${currentRoomId}&auth=${passwords['2'] || ''}`;
-        linkOpenP3.href = `/Player3.html?roomid=${currentRoomId}&auth=${passwords['3'] || ''}`;
+        const baseUrl = getAppBaseUrl();
+        linkOpenHost.href = `${baseUrl}/Host.html?roomid=${currentRoomId}`;
+        linkOpenP1.href = `${baseUrl}/Player1.html?roomid=${currentRoomId}&auth=${passwords['1'] || ''}`;
+        linkOpenP2.href = `${baseUrl}/Player2.html?roomid=${currentRoomId}&auth=${passwords['2'] || ''}`;
+        linkOpenP3.href = `${baseUrl}/Player3.html?roomid=${currentRoomId}&auth=${passwords['3'] || ''}`;
       }
+
+      async function copyText(text, btnElement, successLabel = 'Đã chép') {
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(`Đã sao chép liên kết!`, 'success');
+          if (btnElement) {
+            const originalText = btnElement.textContent;
+            btnElement.textContent = successLabel;
+            setTimeout(() => {
+              btnElement.textContent = originalText;
+            }, 1800);
+          }
+        } catch (err) {
+          showToast('Không thể sao chép tự động: ' + err.message, 'error');
+        }
+      }
+
+      btnCopyHostLink.addEventListener('click', () => copyText(linkOpenHost.href, btnCopyHostLink));
+      btnCopyP1Link.addEventListener('click', () => copyText(linkOpenP1.href, btnCopyP1Link));
+      btnCopyP2Link.addEventListener('click', () => copyText(linkOpenP2.href, btnCopyP2Link));
+      btnCopyP3Link.addEventListener('click', () => copyText(linkOpenP3.href, btnCopyP3Link));
 
       async function subscribeToRoom(roomId) {
         if (realtimeChannel) {
           await supabase.removeChannel(realtimeChannel);
         }
 
-        connectionStatus.textContent = `Đã kết nối phòng ${roomId}`;
+        connectionStatus.textContent = `Phòng ${roomId}`;
         connectionStatus.style.backgroundColor = 'var(--green)';
 
         realtimeChannel = supabase
@@ -616,7 +874,8 @@
               updateUI();
               if (currentRoomData.buzzed_player && currentRoomData.buzzed_player !== prevBuzzed) {
                 playBuzzerSound();
-                showToast(`Player ${currentRoomData.buzzed_player} đã nhấn chuông!`, 'success');
+                const buzzedName = getPlayerName(Number(currentRoomData.buzzed_player));
+                showToast(`${buzzedName} đã nhấn chuông!`, 'success');
               }
             }
           })
@@ -656,6 +915,28 @@
         }
       }
 
+      // Save custom player names
+      async function savePlayerNames() {
+        if (!currentRoomData) return;
+        const name1 = inputP1Name.value.trim() || 'Player 1';
+        const name2 = inputP2Name.value.trim() || 'Player 2';
+        const name3 = inputP3Name.value.trim() || 'Player 3';
+
+        const updatedData = {
+          ...currentRoomData,
+          player_names: {
+            '1': name1,
+            '2': name2,
+            '3': name3,
+          },
+        };
+
+        await updateRoomState(updatedData);
+        showToast('Đã lưu và đồng bộ tên 3 người chơi!', 'success');
+      }
+
+      btnSaveNames.addEventListener('click', savePlayerNames);
+
       btnCreateRoom.addEventListener('click', async () => {
         btnCreateRoom.disabled = true;
         btnCreateRoom.textContent = 'Đang tạo phòng...';
@@ -665,11 +946,20 @@
         const p2 = generate4DigitPass();
         const p3 = generate4DigitPass();
 
+        const name1 = inputP1Name.value.trim() || 'Player 1';
+        const name2 = inputP2Name.value.trim() || 'Player 2';
+        const name3 = inputP3Name.value.trim() || 'Player 3';
+
         const newRoomData = {
           passwords: {
             '1': p1,
             '2': p2,
             '3': p3,
+          },
+          player_names: {
+            '1': name1,
+            '2': name2,
+            '3': name3,
           },
           bell_status: 'locked',
           buzzed_player: null,
@@ -688,11 +978,15 @@
 
           currentRoomId = newRoomId;
           currentRoomData = newRoomData;
-          roomDetailsSection.style.display = 'block';
+          
+          roomDetailsBox.style.display = 'flex';
+          playerNamesBox.style.display = 'flex';
+          quickLinksBox.style.display = 'flex';
+
           updateUI();
           subscribeToRoom(newRoomId);
           showToast(`Tạo phòng ${newRoomId} thành công!`, 'success');
-          showPopup('ĐÃ TẠO PHÒNG MỚI', `Mã phòng: ${newRoomId}\nMật khẩu P1: ${p1}\nMật khẩu P2: ${p2}\nMật khẩu P3: ${p3}`);
+          showPopup('ĐÃ TẠO PHÒNG MỚI', `Mã phòng: ${newRoomId}\nMK P1: ${p1}\nMK P2: ${p2}\nMK P3: ${p3}`);
 
           const url = new URL(window.location);
           url.searchParams.set('roomid', newRoomId);
@@ -702,7 +996,7 @@
           showToast('Lỗi khi tạo phòng: ' + err.message, 'error');
         } finally {
           btnCreateRoom.disabled = false;
-          btnCreateRoom.textContent = 'Tạo mã phòng và mật khẩu';
+          btnCreateRoom.textContent = '+ Tạo mã phòng và mật khẩu mới';
         }
       });
 
@@ -712,7 +1006,7 @@
           return;
         }
 
-        connectionStatus.textContent = 'Đang tải phòng...';
+        connectionStatus.textContent = 'Đang tải...';
         try {
           const { data, error } = await supabase
             .from('rooms')
@@ -724,13 +1018,17 @@
 
           if (!data) {
             showToast(`Không tìm thấy phòng có mã ${roomId}!`, 'error');
-            connectionStatus.textContent = 'Không tìm thấy phòng';
+            connectionStatus.textContent = 'Không tìm thấy';
             return;
           }
 
           currentRoomId = data.id;
           currentRoomData = data.room_data;
-          roomDetailsSection.style.display = 'block';
+          
+          roomDetailsBox.style.display = 'flex';
+          playerNamesBox.style.display = 'flex';
+          quickLinksBox.style.display = 'flex';
+
           updateUI();
           subscribeToRoom(data.id);
           showToast(`Đã tải phòng ${roomId}!`, 'success');
@@ -758,7 +1056,7 @@
       btnOpenBell.addEventListener('click', () => {
         if (!currentRoomData) return;
         updateRoomState({ ...currentRoomData, bell_status: 'open' });
-        showToast('Đã mở chuông cho tất cả người chơi!', 'info');
+        showToast('Đã mở chuông!', 'info');
       });
 
       btnLockBell.addEventListener('click', () => {
@@ -775,7 +1073,7 @@
           buzzed_at: null,
           bell_status: 'open',
         });
-        showToast('Đã reset và mở chuông mới!', 'info');
+        showToast('Đã reset và mở chuông!', 'info');
       });
 
       btnResetLock.addEventListener('click', () => {
