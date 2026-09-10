@@ -897,19 +897,24 @@
         updateUI();
 
         if (realtimeChannel) {
-          realtimeChannel.send({
-            type: 'broadcast',
-            event: 'state_change',
-            payload: { room_data: newRoomData, updated_at: new Date().toISOString() },
-          });
+          try {
+            await realtimeChannel.send({
+              type: 'broadcast',
+              event: 'state_change',
+              payload: { room_data: newRoomData, updated_at: new Date().toISOString() },
+            });
+          } catch (bErr) {
+            console.warn('Broadcast send error:', bErr);
+          }
         }
 
         try {
-          await supabase.from('rooms').upsert({
+          const { error } = await supabase.from('rooms').upsert({
             id: currentRoomId,
             room_data: newRoomData,
             updated_at: new Date().toISOString(),
           });
+          if (error) throw error;
         } catch (err) {
           console.error('Database sync error:', err);
         }
@@ -917,7 +922,10 @@
 
       // Save custom player names
       async function savePlayerNames() {
-        if (!currentRoomData) return;
+        if (!currentRoomData || !currentRoomId) {
+          showToast('Vui lòng tạo hoặc tải phòng trước khi lưu tên!', 'error');
+          return;
+        }
         const name1 = inputP1Name.value.trim() || 'Player 1';
         const name2 = inputP2Name.value.trim() || 'Player 2';
         const name3 = inputP3Name.value.trim() || 'Player 3';
@@ -931,8 +939,18 @@
           },
         };
 
-        await updateRoomState(updatedData);
-        showToast('Đã lưu và đồng bộ tên 3 người chơi!', 'success');
+        btnSaveNames.disabled = true;
+        btnSaveNames.textContent = 'Đang lưu...';
+
+        try {
+          await updateRoomState(updatedData);
+          showToast('Đã lưu và đồng bộ tên 3 người chơi đến Host và các Player!', 'success');
+        } catch (err) {
+          showToast('Lỗi khi lưu tên: ' + err.message, 'error');
+        } finally {
+          btnSaveNames.disabled = false;
+          btnSaveNames.textContent = '💾 Lưu tên';
+        }
       }
 
       btnSaveNames.addEventListener('click', savePlayerNames);

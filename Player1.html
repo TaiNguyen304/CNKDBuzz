@@ -251,7 +251,7 @@
   <body>
     <div class="player-container">
       <header class="app-header">
-        <h1 class="header-title">Vị trí 1 - Player 1</h1>
+        <h1 id="player-title" class="header-title">Player 1 (Đỏ)</h1>
         <div style="display: flex; gap: 8px; align-items: center;">
           <span class="player-badge-p1">VỊ TRÍ 1</span>
           <span id="player-connection-badge" class="header-badge">Đang kết nối...</span>
@@ -384,9 +384,22 @@
       const roomIdLabel = document.getElementById('player-room-id');
       const statusBanner = document.getElementById('player-status-banner');
       const bellButton = document.getElementById('bell-button');
+      const playerTitle = document.getElementById('player-title');
+
+      function getPlayerName(pNum) {
+        if (!currentRoomData || !currentRoomData.player_names) {
+          return pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3';
+        }
+        return currentRoomData.player_names[String(pNum)] || (pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3');
+      }
 
       function updatePlayerUI() {
         if (!currentRoomData) return;
+
+        const myName = getPlayerName(PLAYER_NUMBER);
+        if (playerTitle) {
+          playerTitle.textContent = `${myName} (Đỏ)`;
+        }
 
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
@@ -398,16 +411,21 @@
           bellButton.style.color = 'var(--black)';
           bellButton.style.borderColor = 'var(--black)';
 
-          if (buzzedPlayer === PLAYER_NUMBER || buzzedPlayer === String(PLAYER_NUMBER)) {
+          const buzzedNum = Number(buzzedPlayer);
+          const buzzedName = getPlayerName(buzzedNum);
+
+          if (buzzedNum === PLAYER_NUMBER) {
             bellButton.textContent = 'BẠN ĐÃ GIÀNH QUYỀN TRẢ LỜI!';
-            statusBanner.textContent = 'Bạn đã giành quyền trả lời!';
+            statusBanner.textContent = '🎉 Bạn đã giành quyền trả lời!';
             statusBanner.style.backgroundColor = 'var(--green)';
             statusBanner.style.color = 'var(--white)';
+            statusBanner.style.borderColor = 'var(--green)';
           } else {
-            bellButton.textContent = `PLAYER ${buzzedPlayer} ĐÃ GIÀNH QUYỀN!`;
-            statusBanner.textContent = `Player ${buzzedPlayer} đã giành quyền trả lời!`;
+            bellButton.textContent = `${buzzedName.toUpperCase()} ĐÃ GIÀNH QUYỀN!`;
+            statusBanner.textContent = `🔔 ${buzzedName} đã giành quyền trả lời!`;
             statusBanner.style.backgroundColor = 'var(--red)';
             statusBanner.style.color = 'var(--white)';
+            statusBanner.style.borderColor = 'var(--red)';
           }
           return;
         }
@@ -420,9 +438,10 @@
           bellButton.style.borderColor = 'var(--black)';
           bellButton.textContent = 'BẤM CHUÔNG NGAY!';
 
-          statusBanner.textContent = 'Chuông đang mở! Bạn có thể bấm chuông!';
-          statusBanner.style.backgroundColor = 'var(--green)';
-          statusBanner.style.color = 'var(--white)';
+          statusBanner.textContent = '⚡ Chuông đang mở! Bạn có thể bấm chuông!';
+          statusBanner.style.backgroundColor = '#00ffff';
+          statusBanner.style.color = '#000000';
+          statusBanner.style.borderColor = '#00ffff';
         } else {
           bellButton.disabled = true;
           bellButton.className = 'buzzer-btn';
@@ -431,9 +450,10 @@
           bellButton.style.borderColor = 'var(--black)';
           bellButton.textContent = 'CHUÔNG ĐANG KHÓA';
 
-          statusBanner.textContent = 'Chuông đang khóa. Chờ tín hiệu từ Host / Controller...';
+          statusBanner.textContent = '🔒 Chuông đang khóa. Chờ tín hiệu từ Host / Controller...';
           statusBanner.style.backgroundColor = 'var(--white)';
           statusBanner.style.color = 'var(--black)';
+          statusBanner.style.borderColor = 'var(--black)';
         }
       }
 
@@ -571,10 +591,12 @@
 
                 if (currentRoomData.buzzed_player && currentRoomData.buzzed_player !== prevBuzzed) {
                   playBuzzerSound();
-                  if (currentRoomData.buzzed_player === PLAYER_NUMBER || currentRoomData.buzzed_player === String(PLAYER_NUMBER)) {
+                  const buzzedNum = Number(currentRoomData.buzzed_player);
+                  const buzzedName = getPlayerName(buzzedNum);
+                  if (buzzedNum === PLAYER_NUMBER) {
                     showToast('Bạn đã giành quyền trả lời!', 'success');
                   } else {
-                    showToast(`Player ${currentRoomData.buzzed_player} đã giành quyền trả lời!`, 'info');
+                    showToast(`${buzzedName} đã giành quyền trả lời!`, 'info');
                   }
                 } else if (currentRoomData.bell_status === 'open' && prevStatus !== 'open') {
                   showToast('Chuông đã mở! Hãy nhanh tay bấm!', 'info');

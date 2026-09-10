@@ -375,22 +375,22 @@
         <div class="players-stage-grid">
           <!-- Player 1 Box -->
           <div id="box-player-1" class="player-rect-box">
-            <span class="box-pos-badge">VỊ TRÍ 1</span>
-            <h3 class="box-name">PLAYER 1</h3>
+            <span class="box-pos-badge">VỊ TRÍ 1 (ĐỎ)</span>
+            <h3 id="name-player-1" class="box-name">PLAYER 1</h3>
             <div id="status-player-1" class="box-status-label">Chưa nhấn</div>
           </div>
 
           <!-- Player 2 Box -->
           <div id="box-player-2" class="player-rect-box">
-            <span class="box-pos-badge">VỊ TRÍ 2</span>
-            <h3 class="box-name">PLAYER 2</h3>
+            <span class="box-pos-badge">VỊ TRÍ 2 (VÀNG)</span>
+            <h3 id="name-player-2" class="box-name">PLAYER 2</h3>
             <div id="status-player-2" class="box-status-label">Chưa nhấn</div>
           </div>
 
           <!-- Player 3 Box -->
           <div id="box-player-3" class="player-rect-box">
-            <span class="box-pos-badge">VỊ TRÍ 3</span>
-            <h3 class="box-name">PLAYER 3</h3>
+            <span class="box-pos-badge">VỊ TRÍ 3 (XANH)</span>
+            <h3 id="name-player-3" class="box-name">PLAYER 3</h3>
             <div id="status-player-3" class="box-status-label">Chưa nhấn</div>
           </div>
         </div>
@@ -509,6 +509,9 @@
       const boxP1 = document.getElementById('box-player-1');
       const boxP2 = document.getElementById('box-player-2');
       const boxP3 = document.getElementById('box-player-3');
+      const nameP1 = document.getElementById('name-player-1');
+      const nameP2 = document.getElementById('name-player-2');
+      const nameP3 = document.getElementById('name-player-3');
       const statusP1 = document.getElementById('status-player-1');
       const statusP2 = document.getElementById('status-player-2');
       const statusP3 = document.getElementById('status-player-3');
@@ -522,12 +525,27 @@
         statusP3.textContent = 'Chưa nhấn';
       }
 
+      function getPlayerName(pNum) {
+        if (!currentRoomData || !currentRoomData.player_names) {
+          return pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3';
+        }
+        return currentRoomData.player_names[String(pNum)] || (pNum === 1 ? 'Player 1' : pNum === 2 ? 'Player 2' : 'Player 3');
+      }
+
       function updateHostStageUI() {
         if (!currentRoomData) return;
 
         stageRoomId.textContent = currentRoomId;
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
+
+        const p1Name = getPlayerName(1);
+        const p2Name = getPlayerName(2);
+        const p3Name = getPlayerName(3);
+
+        nameP1.textContent = p1Name;
+        nameP2.textContent = p2Name;
+        nameP3.textContent = p3Name;
 
         resetBoxes();
 
@@ -536,19 +554,20 @@
           hostBellBanner.style.color = '#000000';
           hostBellBanner.style.borderColor = '#00ffff';
 
-          if (buzzedPlayer === 1 || buzzedPlayer === '1') {
+          const buzzedNum = Number(buzzedPlayer);
+          const buzzedName = getPlayerName(buzzedNum);
+
+          if (buzzedNum === 1) {
             boxP1.classList.add('p1-active');
             statusP1.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
-            hostBellBanner.textContent = 'PLAYER 1 (ĐỎ) ĐÃ GIÀNH QUYỀN TRẢ LỜI!';
-          } else if (buzzedPlayer === 2 || buzzedPlayer === '2') {
+          } else if (buzzedNum === 2) {
             boxP2.classList.add('p2-active');
             statusP2.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
-            hostBellBanner.textContent = 'PLAYER 2 (VÀNG) ĐÃ GIÀNH QUYỀN TRẢ LỜI!';
-          } else if (buzzedPlayer === 3 || buzzedPlayer === '3') {
+          } else if (buzzedNum === 3) {
             boxP3.classList.add('p3-active');
             statusP3.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
-            hostBellBanner.textContent = 'PLAYER 3 (XANH DƯƠNG) ĐÃ GIÀNH QUYỀN TRẢ LỜI!';
           }
+          hostBellBanner.textContent = `🔔 ${buzzedName.toUpperCase()} ĐÃ GIÀNH QUYỀN TRẢ LỜI!`;
         } else if (bellStatus === 'open') {
           hostBellBanner.style.backgroundColor = 'var(--green)';
           hostBellBanner.style.color = 'var(--white)';
@@ -615,7 +634,8 @@
 
                 if (currentRoomData.buzzed_player && currentRoomData.buzzed_player !== prevBuzzed) {
                   playBuzzerSound();
-                  showToast(`Player ${currentRoomData.buzzed_player} đã bấm chuông!`, 'success');
+                  const buzzedName = getPlayerName(Number(currentRoomData.buzzed_player));
+                  showToast(`${buzzedName} đã bấm chuông!`, 'success');
                 }
               }
             })
