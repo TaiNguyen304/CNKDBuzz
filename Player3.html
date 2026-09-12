@@ -403,6 +403,8 @@
 
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
+        const lockedPlayers = Array.isArray(currentRoomData.locked_players) ? currentRoomData.locked_players.map(Number) : [];
+        const isLockedOut = lockedPlayers.includes(PLAYER_NUMBER);
 
         if (buzzedPlayer) {
           bellButton.disabled = true;
@@ -427,6 +429,21 @@
             statusBanner.style.color = 'var(--white)';
             statusBanner.style.borderColor = 'var(--red)';
           }
+          return;
+        }
+
+        if (isLockedOut) {
+          bellButton.disabled = true;
+          bellButton.className = 'buzzer-btn';
+          bellButton.style.backgroundColor = '#cbd5e1';
+          bellButton.style.color = '#334155';
+          bellButton.style.borderColor = '#64748b';
+          bellButton.textContent = 'BẠN ĐÃ BẤM Ở LƯỢT TRƯỚC';
+
+          statusBanner.textContent = '⛔ Bạn đã bấm chuông ở lượt trước! Không thể bấm tiếp trong câu này.';
+          statusBanner.style.backgroundColor = '#fee2e2';
+          statusBanner.style.color = '#dc2626';
+          statusBanner.style.borderColor = '#ef4444';
           return;
         }
 
@@ -467,6 +484,11 @@
           showToast('Đã có người giành quyền bấm trước!', 'error');
           return;
         }
+        const lockedPlayers = Array.isArray(currentRoomData.locked_players) ? currentRoomData.locked_players.map(Number) : [];
+        if (lockedPlayers.includes(PLAYER_NUMBER)) {
+          showToast('Bạn đã bấm ở lượt trước, không thể bấm tiếp!', 'error');
+          return;
+        }
         if (isSubmittingBuzz) return;
 
         isSubmittingBuzz = true;
@@ -482,15 +504,23 @@
           if (fetchErr) throw fetchErr;
 
           const freshData = latestRoom.room_data || {};
-          if (freshData.bell_status !== 'open' || freshData.buzzed_player) {
+          const latestLocked = Array.isArray(freshData.locked_players) ? freshData.locked_players.map(Number) : [];
+
+          if (freshData.bell_status !== 'open' || freshData.buzzed_player || latestLocked.includes(PLAYER_NUMBER)) {
             currentRoomData = freshData;
             updatePlayerUI();
             if (freshData.buzzed_player) {
               showToast(`Player ${freshData.buzzed_player} đã giành quyền trả lời!`, 'info');
+            } else if (latestLocked.includes(PLAYER_NUMBER)) {
+              showToast('Bạn đã bấm ở lượt trước, không thể bấm tiếp!', 'error');
             }
             return;
           }
 
+          if (!latestLocked.includes(PLAYER_NUMBER)) {
+            latestLocked.push(PLAYER_NUMBER);
+          }
+          freshData.locked_players = latestLocked;
           freshData.bell_status = 'locked';
           freshData.buzzed_player = PLAYER_NUMBER;
           freshData.buzzed_at = new Date().toISOString();

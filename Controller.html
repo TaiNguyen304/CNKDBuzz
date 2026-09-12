@@ -816,6 +816,7 @@
 
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
+        const lockedPlayers = Array.isArray(currentRoomData.locked_players) ? currentRoomData.locked_players.map(Number) : [];
 
         if (buzzedPlayer) {
           bellStatusBanner.className = 'status-indicator status-buzzed';
@@ -823,10 +824,20 @@
           bellStatusBanner.textContent = `🔔 ${buzzedName.toUpperCase()} ĐÃ NHẤN CHUÔNG THÀNH CÔNG!`;
         } else if (bellStatus === 'open') {
           bellStatusBanner.className = 'status-indicator status-open';
-          bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG MỞ (SẴN SÀNG BẤM)';
+          if (lockedPlayers.length > 0) {
+            const lockedNames = lockedPlayers.map(p => getPlayerName(p)).join(', ');
+            bellStatusBanner.textContent = `TRẠNG THÁI CHUÔNG: ĐANG MỞ (ĐÃ KHÓA: ${lockedNames.toUpperCase()})`;
+          } else {
+            bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG MỞ (SẴN SÀNG BẤM)';
+          }
         } else {
           bellStatusBanner.className = 'status-indicator status-locked';
-          bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG KHÓA';
+          if (lockedPlayers.length > 0) {
+            const lockedNames = lockedPlayers.map(p => getPlayerName(p)).join(', ');
+            bellStatusBanner.textContent = `TRẠNG THÁI CHUÔNG: ĐANG KHÓA (ĐÃ BẤM: ${lockedNames.toUpperCase()})`;
+          } else {
+            bellStatusBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG KHÓA';
+          }
         }
 
         const baseUrl = getAppBaseUrl();
@@ -982,6 +993,7 @@
           bell_status: 'locked',
           buzzed_player: null,
           buzzed_at: null,
+          locked_players: [],
           created_at: new Date().toISOString(),
         };
 
@@ -1073,13 +1085,36 @@
 
       btnOpenBell.addEventListener('click', () => {
         if (!currentRoomData) return;
-        updateRoomState({ ...currentRoomData, bell_status: 'open' });
-        showToast('Đã mở chuông!', 'info');
+        let locked = Array.isArray(currentRoomData.locked_players) ? [...currentRoomData.locked_players].map(Number) : [];
+        if (currentRoomData.buzzed_player && !locked.includes(Number(currentRoomData.buzzed_player))) {
+          locked.push(Number(currentRoomData.buzzed_player));
+        }
+        updateRoomState({
+          ...currentRoomData,
+          locked_players: locked,
+          buzzed_player: null,
+          buzzed_at: null,
+          bell_status: 'open',
+        });
+        if (locked.length > 0) {
+          const lockedNames = locked.map(p => getPlayerName(p)).join(', ');
+          showToast(`Đã mở chuông! (Đã khóa lượt: ${lockedNames})`, 'info');
+        } else {
+          showToast('Đã mở chuông!', 'info');
+        }
       });
 
       btnLockBell.addEventListener('click', () => {
         if (!currentRoomData) return;
-        updateRoomState({ ...currentRoomData, bell_status: 'locked' });
+        let locked = Array.isArray(currentRoomData.locked_players) ? [...currentRoomData.locked_players].map(Number) : [];
+        if (currentRoomData.buzzed_player && !locked.includes(Number(currentRoomData.buzzed_player))) {
+          locked.push(Number(currentRoomData.buzzed_player));
+        }
+        updateRoomState({
+          ...currentRoomData,
+          locked_players: locked,
+          bell_status: 'locked',
+        });
         showToast('Đã khóa chuông!', 'info');
       });
 
@@ -1089,9 +1124,10 @@
           ...currentRoomData,
           buzzed_player: null,
           buzzed_at: null,
+          locked_players: [],
           bell_status: 'open',
         });
-        showToast('Đã reset và mở chuông!', 'info');
+        showToast('Đã reset và mở chuông! (Tất cả người chơi được bấm lại)', 'info');
       });
 
       btnResetLock.addEventListener('click', () => {
@@ -1100,9 +1136,10 @@
           ...currentRoomData,
           buzzed_player: null,
           buzzed_at: null,
+          locked_players: [],
           bell_status: 'locked',
         });
-        showToast('Đã reset và khóa chuông!', 'info');
+        showToast('Đã reset và khóa chuông! (Tất cả người chơi được bấm lại)', 'info');
       });
 
       const urlParams = new URLSearchParams(window.location.search);

@@ -520,6 +520,9 @@
         boxP1.className = 'player-rect-box';
         boxP2.className = 'player-rect-box';
         boxP3.className = 'player-rect-box';
+        boxP1.style.opacity = '1';
+        boxP2.style.opacity = '1';
+        boxP3.style.opacity = '1';
         statusP1.textContent = 'Chưa nhấn';
         statusP2.textContent = 'Chưa nhấn';
         statusP3.textContent = 'Chưa nhấn';
@@ -538,6 +541,7 @@
         stageRoomId.textContent = currentRoomId;
         const bellStatus = currentRoomData.bell_status || 'locked';
         const buzzedPlayer = currentRoomData.buzzed_player;
+        const lockedPlayers = Array.isArray(currentRoomData.locked_players) ? currentRoomData.locked_players.map(Number) : [];
 
         const p1Name = getPlayerName(1);
         const p2Name = getPlayerName(2);
@@ -549,6 +553,20 @@
 
         resetBoxes();
 
+        // Mark players who buzzed in previous turn before reset
+        for (const lp of lockedPlayers) {
+          if (lp === 1 && lp !== Number(buzzedPlayer)) {
+            boxP1.style.opacity = '0.5';
+            statusP1.textContent = 'ĐÃ BẤM LƯỢT TRƯỚC (KHÓA)';
+          } else if (lp === 2 && lp !== Number(buzzedPlayer)) {
+            boxP2.style.opacity = '0.5';
+            statusP2.textContent = 'ĐÃ BẤM LƯỢT TRƯỚC (KHÓA)';
+          } else if (lp === 3 && lp !== Number(buzzedPlayer)) {
+            boxP3.style.opacity = '0.5';
+            statusP3.textContent = 'ĐÃ BẤM LƯỢT TRƯỚC (KHÓA)';
+          }
+        }
+
         if (buzzedPlayer) {
           hostBellBanner.style.backgroundColor = '#00ffff';
           hostBellBanner.style.color = '#000000';
@@ -559,12 +577,15 @@
 
           if (buzzedNum === 1) {
             boxP1.classList.add('p1-active');
+            boxP1.style.opacity = '1';
             statusP1.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
           } else if (buzzedNum === 2) {
             boxP2.classList.add('p2-active');
+            boxP2.style.opacity = '1';
             statusP2.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
           } else if (buzzedNum === 3) {
             boxP3.classList.add('p3-active');
+            boxP3.style.opacity = '1';
             statusP3.textContent = 'ĐÃ BẤM CHUÔNG THÀNH CÔNG!';
           }
           hostBellBanner.textContent = `🔔 ${buzzedName.toUpperCase()} ĐÃ GIÀNH QUYỀN TRẢ LỜI!`;
@@ -572,12 +593,22 @@
           hostBellBanner.style.backgroundColor = 'var(--green)';
           hostBellBanner.style.color = 'var(--white)';
           hostBellBanner.style.borderColor = 'var(--lime)';
-          hostBellBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG MỞ (SẴN SÀNG)';
+          if (lockedPlayers.length > 0) {
+            const lockedNames = lockedPlayers.map(p => getPlayerName(p)).join(', ');
+            hostBellBanner.textContent = `TRẠNG THÁI CHUÔNG: ĐANG MỞ (ĐÃ KHÓA: ${lockedNames.toUpperCase()})`;
+          } else {
+            hostBellBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG MỞ (SẴN SÀNG)';
+          }
         } else {
           hostBellBanner.style.backgroundColor = 'var(--bg-main)';
           hostBellBanner.style.color = 'var(--white)';
           hostBellBanner.style.borderColor = 'var(--red)';
-          hostBellBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG KHÓA';
+          if (lockedPlayers.length > 0) {
+            const lockedNames = lockedPlayers.map(p => getPlayerName(p)).join(', ');
+            hostBellBanner.textContent = `TRẠNG THÁI CHUÔNG: ĐANG KHÓA (ĐÃ BẤM: ${lockedNames.toUpperCase()})`;
+          } else {
+            hostBellBanner.textContent = 'TRẠNG THÁI CHUÔNG: ĐANG KHÓA';
+          }
         }
       }
 
